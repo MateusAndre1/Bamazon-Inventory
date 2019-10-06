@@ -30,7 +30,7 @@ var inventory = function () {
     if (err) throw err;
     log(chalk.green.bold(`\n
          ----------------------------------------------------------\n
-         ---------  WELCOME TO BAMAZON!! A One Stop Shop! ---------\n
+         ---------  WELCOME TO ${chalk.red.bold.underline("BAMAZON")}!! A One Stop Shop! ---------\n
          ---------         Find Our Prodcuts Below        ---------\n
          ----------------------------------------------------------\n
       `));
