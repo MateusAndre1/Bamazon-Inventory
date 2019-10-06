@@ -86,9 +86,25 @@ var purchase = function () {
               if (amount > currentAmount) {
                 log(chalk.red.bold(`Our apologies, we currently only have ${currentAmount} left of this item`))
                 purchase();
-              } 
-            })
+              } else {
+                let totalCost = amount * res[0].price;
+
+                log(chalk.red.bold(`\n\nYou Purchased ${chalk.blue.bold(amount)} ${chalk.green.bold(res[0].product_name)} for ${chalk.green.bold("$")}${chalk.green.bold.underline(res[0].price)} each
+                \nTotal amount of purchase: ${chalk.green.bold("$")}${chalk.green.bold.underline(totalCost)}\n`));
+
+                let newAmount = currentAmount - amount;
+
+                connection.query(
+                  `UPDATE products SET stock_quantity = ${newAmount} WHERE item_id = ${res[0].item_id}`, function (err, response) {
+                    if (err) throw err;
+                    log(chalk.red.bold(`\nYour order has been processed and completed\nWe look forward to seeing you again!
+                    `));
+                    connection.end();
+                  }
+                )
+              }
+            });
         }
-      })
-    })
+      });
+    });
 }
