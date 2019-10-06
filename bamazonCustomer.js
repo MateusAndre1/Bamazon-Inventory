@@ -34,25 +34,61 @@ var inventory = function () {
          ---------         Find Our Prodcuts Below        ---------\n
          ----------------------------------------------------------\n
       `));
-            
 
-  // create a new cli table
-  var table = new Table({
-    head: ["Product ID", "Product Description", "Cost"],
-    colWidths: [13, 52, 10],
-    colAligns: ["center", "left", "right"],
-    style: {
-    head: ["white"],
-    compact: true
-  }
+
+    // create a new cli table
+    var table = new Table({
+      head: [`\nProduct ID\n`, `\nProduct Description\n`, `\nCost\n`],
+      colWidths: [13, 52, 7],
+      colAligns: ["center", "center", "left"],
+      style: {
+        head: ["bold", "red"],
+        compact: true
+      }
+    });
+
+    // loop through data in bamazon db
+    for (let i = 0; i < res.length; i++) {
+      table.push([res[i].item_id, res[i].product_name, res[i].price])
+    }
+
+    // log out the cli table
+    log(`${chalk.green(table.toString())}\n`)
+    purchase();
   });
+}
 
-  // loop through data in bamazon db
-  for (let i = 0; i < res.length; i++) {
-    table.push([res[i].item_id, res[i].product_name, res[i].price])
-  }
-  log(`${chalk.green(table.toString())}\n`)
-  
-});
-connection.end();
+var purchase = function () {
+
+  inquirer
+    .prompt({
+      name: "product",
+      type: "input",
+      message: "Please select a Product ID you'd like to purchase"
+    })
+    .then(answer => {
+      var userInput = answer.product;
+      connection.query("SELECT * FROM products where item_id=?", userInput, function (err, res) {
+        if (err) throw err;
+        if (res.length === 0) {
+          log(chalk.red(`\nI'm Sorry, that ID did not register\n`));
+          purchase();
+        } else {
+          inquirer
+            .prompt({
+              name: "amount",
+              type: "input",
+              message: "How many would you like to purchase?"
+            })
+            .then(answer2 => {
+              var amount = answer2.amount;
+              var currentAmount = res[0].stock_quantity;
+              if (amount > currentAmount) {
+                log(chalk.red.bold(`Our apologies, we currently only have ${currentAmount} left of this item`))
+                purchase();
+              } 
+            })
+        }
+      })
+    })
 }
