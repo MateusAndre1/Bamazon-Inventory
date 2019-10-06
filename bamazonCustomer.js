@@ -42,7 +42,7 @@ var inventory = function () {
     colWidths: [13, 52, 10],
     colAligns: ["center", "left", "right"],
     style: {
-    head: ["green"],
+    head: ["white"],
     compact: true
   }
   });
