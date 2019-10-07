@@ -31,21 +31,21 @@ function portal() {
     inquirer
         .prompt({
             name: "product",
-            type: "checkbox",
+            type: "list",
             message: "Please choose an option below",
             choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product"]
 
         })
         .then(answer => {
-            let choice = answer.name;
+            let choice = answer.product;
             if (choice === "View Products for Sale") {
                 productSale();
             } else if (choice === "View Low Inventory") {
                 lowInventory();
             } else if (choice === "Add to Inventory") {
-                
+                lowInventory();
             } else {
-                
+                lowInventory();
             }
         })
 }
@@ -86,7 +86,7 @@ var lowInventory = function() {
 
     // connect to database
 
-    connection.query("SELECT * FROM products", function (err, res) {
+    connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, res) {
 
         if (err) throw err;
 
@@ -107,7 +107,7 @@ var lowInventory = function() {
             
         }
 
-        // log out the cli table
+
         log(`${chalk.green(table.toString())}\n`)
 
         returnToPortal();
@@ -126,7 +126,7 @@ var returnToPortal = function () {
 
             })
             .then(answer2 => {
-                let choice2 = answer2.name;
+                let choice2 = answer2.stayOrExit;
                 if (choice2 === "Yes please I'm a Busy Manager") {
                     portal();
                 } else {
