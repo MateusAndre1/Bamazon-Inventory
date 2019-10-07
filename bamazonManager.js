@@ -45,7 +45,7 @@ function portal() {
             } else if (choice === "Add to Inventory") {
                 inventoryAdd();
             } else {
-                lowInventory();
+                addProduct();
             }
         })
 }
@@ -164,7 +164,7 @@ var inventoryAdd = function () {
                             connection.query(
                                 `UPDATE products SET stock_quantity = ${newAmount} WHERE item_id = ${res[0].item_id}`, function (err, response) {
                                     if (err) throw err;
-                                    log(chalk.red.bold(`\nQuantity has succesfully been updated\n
+                                    log(chalk.red.bold(`\nQuantity has succesfully been updated\n\n
                                   `));
                                     returnToPortal();
                                 }
@@ -174,6 +174,56 @@ var inventoryAdd = function () {
                 });
             })
     })
+}
+
+
+var addProduct = function () {
+
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "name",
+                message: "Please enter the name of the product you wish to add"
+            },
+            {
+                type: "input",
+                name: "department",
+                message: "What department does this item belong to"
+            },
+            {
+                type: "input",
+                name: "price",
+                message: "Please enter the price of the item"
+            },
+            {
+                type: "input",
+                name: "quantity",
+                message: "Please enter a stock quantity for this item"
+            }
+        ])
+        .then(function (answer5) {
+            var name = answer5.name;
+            var department = answer5.department;
+            var price = answer5.price;
+            var quantity = answer5.quantity;
+
+            connection.query(
+                "INSERT INTO products SET ?",
+                {
+                    product_name: name,
+                    department_name: department,
+                    price: price,
+                    stock_quantity: quantity
+                },
+                function (err, insertResult) {
+                    if (err) console.log("Error: " + err);
+                    log(chalk.red.bold(`\nNew product: ${chalk.green.bold.underline(name)} has been added\n\n
+                    `));
+                    returnToPortal();
+                }
+            );
+        });
 }
 
 
