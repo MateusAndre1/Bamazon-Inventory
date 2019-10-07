@@ -33,7 +33,7 @@ function portal() {
             name: "superviseThis",
             type: "list",
             message: "Please choose an option below",
-            choices: ["View Products for Sale by Department", "Create a New Department"]
+            choices: ["View Products for Sale by Department", "Create a New Department", "Exit"]
         })
         .then(answer => {
             let choice = answer.superviseThis;
@@ -56,7 +56,7 @@ function portal() {
 
                         }
                         log(`${chalk.green(table.toString())}\n`)
-
+                        portal();
                     });
 
             } else if (choice === "Create a New Department") {
@@ -86,9 +86,12 @@ function portal() {
                             function (err, insertResult) {
                                 if (err) console.log("Error: " + err);
                                 log(chalk.red.bold(`\nNew department: ${chalk.green.bold.underline(department)} has been added!\n\n`));
+                                portal();
                             }
                         );
                     });
+            } else {
+                connection.end();
             }
         });
 }

@@ -18,6 +18,8 @@ This will show a list of columns which include:
 
 There will be an assortment of different products for the customer to choose from and purchase the quantity they need.
 
+ * Please see the following link for Customer Demo [Video](https://drive.google.com/file/d/1EugniAMZWNEG7mPo9a9-jqmi3JjL-zgC/view)
+
 ## Manager View App
 
 This will show a list of menu options for the manager.
@@ -30,6 +32,8 @@ This will show a list of menu options for the manager.
     
   * Add New Product (allow the manager to add a completely new product to the store)
 
+  * Please see the following link for Manager Demo [Video](https://drive.google.com/file/d/1OLR-WP6htxHiiu9YBro2W2mcO9QJV103/view)
+
 ## Supervisor View App
 
 This will have a new table of the following:
@@ -41,4 +45,6 @@ This will have a new table of the following:
    * over_head_costs (A dummy number you set for each department)
 
 When a supervisor selects `View Product Sales by Department`, the app should display a summarized table in their terminal/bash window.
+
+* Please see the following link for Supervisor Demo [Video](https://drive.google.com/file/d/1B8zzWqB5wT1ULKA4HCxpK2v2--gO0Vlw/view)
 
