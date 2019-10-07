@@ -38,12 +38,12 @@ function portal() {
         .then(answer => {
             let choice = answer.superviseThis;
             if (choice === "View Products for Sale by Department") {
-                connection.query("SELECT departments.department_id, departments.department_name, departments.over_head_costs, products.product_sales, products.product_sales - departments.over_head_costs AS total_profit FROM departments INNER JOIN products ON (departments.department_name = products.department_name) GROUP BY departments.department_name, department_id"
+                connection.query("SELECT departments.department_id, departments.department_name, departments.over_head_costs, SUM(products.product_sales) AS product_sales, SUM(products.product_sales) - departments.over_head_costs AS total_profit FROM departments INNER JOIN products ON (departments.department_name = products.department_name)  GROUP BY departments.department_id"
                     , function (err, res) {
                         if (err) throw err;
                         var table = new Table({
                             head: [`\nDepartment ID\n`, `\nDepartment Name\n`, `\nOver Head Cost\n`, `\nProduct Sales\n`, `\nTotal Profit\n`],
-                            colWidths: [13, 40, 20, 20, 20],
+                            colWidths: [17, 40, 20, 20, 20],
                             colAligns: ["center", "center", "center", "center", "center"],
                             style: {
                                 head: ["bold", "red"],
