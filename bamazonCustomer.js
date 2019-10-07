@@ -88,7 +88,7 @@ var purchase = function () {
                 purchase();
               } else {
                 let totalCost = amount * res[0].price;
-
+                let totalSales = parseInt(totalCost) + parseInt(res[0].product_sales);
                 log(chalk.red.bold(`\n\nYou Purchased ${chalk.blue.bold(amount)} ${chalk.green.bold(res[0].product_name)} for ${chalk.green.bold("$")}${chalk.green.bold.underline(res[0].price)} each
                 \nTotal amount of purchase: ${chalk.green.bold("$")}${chalk.green.bold.underline(totalCost)}\n`));
 
@@ -99,6 +99,11 @@ var purchase = function () {
                     if (err) throw err;
                     log(chalk.red.bold(`\nYour order has been processed and completed\nWe look forward to seeing you again!
                     `));
+                  }
+                )
+                connection.query(
+                  `UPDATE products SET product_sales = ${totalSales} WHERE item_id = ${res[0].item_id}`, function (err, response) {
+                    if (err) throw err;
                     connection.end();
                   }
                 )
