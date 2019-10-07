@@ -1,6 +1,6 @@
 var inquirer = require("inquirer");
 var mysql = require("mysql");
-var Table = require("cli-table2")
+var Table = require("cli-table2");
 var chalk = require("chalk");
 var log = console.log;
 
