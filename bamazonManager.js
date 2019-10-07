@@ -43,14 +43,14 @@ function portal() {
             } else if (choice === "View Low Inventory") {
                 lowInventory();
             } else if (choice === "Add to Inventory") {
-                lowInventory();
+                inventoryAdd();
             } else {
                 lowInventory();
             }
         })
 }
 
-var productSale = function() {
+var productSale = function () {
 
     // connect to database
 
@@ -72,7 +72,7 @@ var productSale = function() {
         // loop through data in bamazon db
         for (let i = 0; i < res.length; i++) {
             table.push([res[i].item_id, res[i].product_name, res[i].price, res[i].stock_quantity])
-            
+
         }
 
         // log out the cli table
@@ -82,7 +82,7 @@ var productSale = function() {
     });
 }
 
-var lowInventory = function() {
+var lowInventory = function () {
 
     // connect to database
 
@@ -104,7 +104,7 @@ var lowInventory = function() {
         // loop through data in bamazon db
         for (let i = 0; i < res.length; i++) {
             table.push([res[i].item_id, res[i].product_name, res[i].price, res[i].stock_quantity])
-            
+
         }
 
 
@@ -114,23 +114,85 @@ var lowInventory = function() {
     });
 }
 
+var inventoryAdd = function () {
+
+    // connect to database
+
+    connection.query("SELECT * FROM products", function (err, res) {
+
+        if (err) throw err;
+
+        // create a new cli table
+        var table = new Table({
+            head: [`\nProduct ID\n`, `\nProduct Description\n`, `\nCost\n`, `\nQuantity\n`],
+            colWidths: [13, 48, 7, 12],
+            colAligns: ["center", "center", "left", "center"],
+            style: {
+                head: ["bold", "red"],
+                compact: true
+            }
+        });
+
+        // loop through data in bamazon db
+        for (let i = 0; i < res.length; i++) {
+            table.push([res[i].item_id, res[i].product_name, res[i].price, res[i].stock_quantity])
+
+        }
+
+        log(`${chalk.green(table.toString())}\n\n`)
+
+        inquirer
+            .prompt({
+                name: "addInvetory",
+                type: "input",
+                message: "Please select a Product ID you'd like to update"
+            })
+            .then(answer3 => {
+                var item = answer3.addInvetory;
+                connection.query("SELECT * FROM products where item_id=?", item, function (err, res) {
+                    if (err) throw err;
+                    inquirer
+                        .prompt({
+                            name: "addToInvetory",
+                            type: "input",
+                            message: "Please enter how many you'd like to add"
+                        })
+                        .then(answer4 => {
+                            let amount = answer4.addToInvetory;
+                            let currentAmount = res[0].stock_quantity;
+                            let newAmount = parseInt(amount) + parseInt(currentAmount);
+                            connection.query(
+                                `UPDATE products SET stock_quantity = ${newAmount} WHERE item_id = ${res[0].item_id}`, function (err, response) {
+                                    if (err) throw err;
+                                    log(chalk.red.bold(`\nQuantity has succesfully been updated\n
+                                  `));
+                                    returnToPortal();
+                                }
+                            )
+                        })
+
+                });
+            })
+    })
+}
+
 
 var returnToPortal = function () {
-    
-    inquirer
-            .prompt({
-                name: "stayOrExit",
-                type: "list",
-                message: "Would you like to go back to the portal?",
-                choices: ["Yes please I'm a Busy Manager", "Exit"]
 
-            })
-            .then(answer2 => {
-                let choice2 = answer2.stayOrExit;
-                if (choice2 === "Yes please I'm a Busy Manager") {
-                    portal();
-                } else {
-                    connection.end();
-                }
-            })
+    inquirer
+        .prompt({
+            name: "stayOrExit",
+            type: "list",
+            message: "Would you like to go back to the portal?",
+            choices: ["Yes please I'm a Busy Manager", "Exit"]
+
+        })
+        .then(answer2 => {
+            let choice2 = answer2.stayOrExit;
+            if (choice2 === "Yes please I'm a Busy Manager") {
+                portal();
+            } else {
+                connection.end();
+            }
+        })
 }
